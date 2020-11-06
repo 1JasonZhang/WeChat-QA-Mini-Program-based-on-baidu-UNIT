@@ -13,6 +13,7 @@ Page({
     }],
     value:''
   },
+
   /**
      * 发送事件处理函数
      */
@@ -23,12 +24,12 @@ Page({
     let obj = {},
       isay = e.detail.value.says,
       syas = this.data.syas,
-      length = syas.length,
-      key = '百度ai开发平台获取的secret key'
+      length = syas.length
+
 
     //发送
       wx.request({
-        url: 'https://aip.baidubce.com/rpc/2.0/unit/service/chat?access_token=' + key,
+        url: 'https://aip.baidubce.com/rpc/2.0/unit/service/chat?access_token=' + this.data.imp_key,
         data:{
           "log_id":"UNITTEST_10000",
           "version":"2.0",
@@ -70,8 +71,27 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
+   
   onLoad: function (options) {
-
+    let that = this
+    let key = {},
+      ak = '百度ai开放平台申请的ak',
+      sk = '百度ai开放平台申请的sk'
+  
+    wx.request({
+      url: 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=' + ak + '&client_secret=' + sk,
+      method:'POST',
+      success(res) {
+        try {
+          let access_token = res.data.access_token;
+          that.setData({
+            imp_key: access_token
+          })
+        } catch (error) {
+          console.log(error)
+        }          
+      }
+    })
   },
 
   /**
